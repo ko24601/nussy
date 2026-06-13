@@ -548,7 +548,97 @@ section { position: relative; }
 }
 
 /* SITES SECTION */
-#sites { background: var(--white); }
+#sites { background: var(--white); padding-bottom: 4rem; }
+
+.sites-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* CAROUSEL */
+.carousel-nav {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.carousel-btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.carousel-btn:hover {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.carousel-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  border-color: var(--border);
+  background: var(--white);
+  color: var(--text);
+}
+
+.carousel {
+  margin-top: 3rem;
+  overflow: hidden;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.carousel.dragging { cursor: grabbing; }
+
+.carousel-track {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0.5rem 3rem;
+  will-change: transform;
+}
+
+.carousel-card {
+  flex: 0 0 360px;
+  width: 360px;
+  margin-top: 0 !important;
+}
+
+.carousel.dragging .carousel-card { pointer-events: none; }
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+}
+
+.carousel-dots button {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--border);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.25s;
+}
+
+.carousel-dots button.active {
+  background: var(--green);
+  width: 26px;
+  border-radius: 4px;
+}
 
 .sites-grid {
   display: grid;
@@ -850,6 +940,9 @@ footer {
   .nav-toggle { display: flex; }
   .section-inner { padding: 5rem 1.5rem; }
   .about-grid, .identity-grid, .sites-grid { grid-template-columns: 1fr; }
+  .sites-head { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .carousel-track { padding: 0.5rem 1.5rem; }
+  .carousel-card { flex-basis: 80vw; width: 80vw; }
   .about-3d, .identity-visual { height: 280px; }
   #stats { gap: 2.5rem; padding: 2rem 1.5rem; }
   footer { padding: 2rem 1.5rem; }
@@ -947,11 +1040,22 @@ footer {
 <!-- SITES -->
 <section id="sites">
   <div class="section-inner">
-    <p class="section-chip reveal">Our Sites</p>
-    <h2 class="section-heading reveal reveal-delay-1">Everything<br>we've built.</h2>
-    <div class="sites-grid">
+    <div class="sites-head">
+      <div>
+        <p class="section-chip reveal">Our Sites</p>
+        <h2 class="section-heading reveal reveal-delay-1">Everything<br>we've built.</h2>
+      </div>
+      <div class="carousel-nav reveal reveal-delay-2">
+        <button class="carousel-btn" id="carPrev" aria-label="Previous">←</button>
+        <button class="carousel-btn" id="carNext" aria-label="Next">→</button>
+      </div>
+    </div>
+  </div>
 
-      <div class="site-card reveal reveal-delay-1" style="opacity:0.4;cursor:default;pointer-events:none;">
+  <div class="carousel" id="carousel">
+    <div class="carousel-track" id="carouselTrack">
+
+      <div class="site-card carousel-card" style="opacity:0.4;cursor:grab;">
         <div class="site-card-tag">Coming Soon</div>
         <div class="site-card-num">01 — rapidly-rl</div>
         <div class="site-card-name">Rapidly</div>
@@ -961,7 +1065,7 @@ footer {
         </div>
       </div>
 
-      <a class="site-card reveal reveal-delay-2" href="https://www.nussymotorsport.de/" target="_blank" rel="noopener">
+      <a class="site-card carousel-card" href="https://www.nussymotorsport.de/" target="_blank" rel="noopener">
         <div class="site-card-tag">Racing</div>
         <div class="site-card-num">02 — nussy-motorsport</div>
         <div class="site-card-name">Nussy Motorsport</div>
@@ -972,7 +1076,7 @@ footer {
         </div>
       </a>
 
-      <a class="site-card reveal reveal-delay-3" href="https://nussymotorsport.store/" target="_blank" rel="noopener">
+      <a class="site-card carousel-card" href="https://nussymotorsport.store/" target="_blank" rel="noopener">
         <div class="site-card-tag">Merch</div>
         <div class="site-card-num">03 — nussy-store</div>
         <div class="site-card-name">Nussy Store</div>
@@ -983,7 +1087,7 @@ footer {
         </div>
       </a>
 
-      <a class="site-card reveal reveal-delay-4" href="https://prlesports.com/" target="_blank" rel="noopener">
+      <a class="site-card carousel-card" href="https://prlesports.com/" target="_blank" rel="noopener">
         <div class="site-card-tag">Esports</div>
         <div class="site-card-num">04 — prl-esports</div>
         <div class="site-card-name">PRL Esports</div>
@@ -994,7 +1098,7 @@ footer {
         </div>
       </a>
 
-      <div class="site-card reveal reveal-delay-4" style="opacity:0.4;cursor:default;pointer-events:none;">
+      <div class="site-card carousel-card" style="opacity:0.4;cursor:grab;">
         <div class="site-card-tag">Coming Soon</div>
         <div class="site-card-num">05 — nussy-dev</div>
         <div class="site-card-name">Nussy Dev</div>
@@ -1006,6 +1110,8 @@ footer {
 
     </div>
   </div>
+
+  <div class="carousel-dots" id="carouselDots"></div>
 </section>
 
 <!-- IDENTITY -->
@@ -1162,18 +1268,124 @@ footer {
   });
 })();
 
-// SITE CARD 3D TILT
-document.querySelectorAll('.site-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    card.style.transform = `translateY(-6px) rotateX(${-y * 8}deg) rotateY(${x * 10}deg)`;
+// DRAG CAROUSEL
+(function() {
+  const carousel = document.getElementById('carousel');
+  const track = document.getElementById('carouselTrack');
+  const prevBtn = document.getElementById('carPrev');
+  const nextBtn = document.getElementById('carNext');
+  const dotsWrap = document.getElementById('carouselDots');
+  if (!carousel || !track) return;
+
+  const cards = Array.from(track.children);
+  let pos = 0;          // current translate
+  let target = 0;       // eased target
+  let min = 0;          // min translate (scroll end, negative)
+  let isDown = false;
+  let startX = 0;
+  let startPos = 0;
+  let lastX = 0;
+  let velocity = 0;
+  let dragged = false;
+  let raf;
+
+  function step() {
+    return cards[0].offsetWidth + 20; // card width + gap
+  }
+
+  function measure() {
+    const trackWidth = track.scrollWidth;
+    const viewWidth = carousel.clientWidth;
+    min = Math.min(0, viewWidth - trackWidth);
+    clamp();
+    buildDots();
+    updateDots();
+    updateBtns();
+  }
+
+  function clamp() {
+    target = Math.max(min, Math.min(0, target));
+  }
+
+  function animate() {
+    pos += (target - pos) * 0.12;
+    if (Math.abs(target - pos) < 0.1) pos = target;
+    track.style.transform = `translateX(${pos}px)`;
+    raf = requestAnimationFrame(animate);
+  }
+
+  // ── Dots ──
+  function pageCount() {
+    return Math.max(1, Math.ceil(-min / step()) + 1);
+  }
+  function buildDots() {
+    dotsWrap.innerHTML = '';
+    const n = pageCount();
+    for (let i = 0; i < n; i++) {
+      const b = document.createElement('button');
+      b.addEventListener('click', () => { target = Math.max(min, -i * step()); clamp(); updateDots(); updateBtns(); });
+      dotsWrap.appendChild(b);
+    }
+  }
+  function currentIndex() {
+    return Math.round(-target / step());
+  }
+  function updateDots() {
+    const idx = currentIndex();
+    Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+  function updateBtns() {
+    prevBtn.disabled = target >= -1;
+    nextBtn.disabled = target <= min + 1;
+  }
+
+  // ── Arrows ──
+  prevBtn.addEventListener('click', () => { target += step(); clamp(); updateDots(); updateBtns(); });
+  nextBtn.addEventListener('click', () => { target -= step(); clamp(); updateDots(); updateBtns(); });
+
+  // ── Drag (pointer events: mouse + touch) ──
+  function down(x) {
+    isDown = true; dragged = false;
+    startX = x; lastX = x; startPos = target;
+    velocity = 0;
+    carousel.classList.add('dragging');
+  }
+  function move(x) {
+    if (!isDown) return;
+    const dx = x - startX;
+    if (Math.abs(dx) > 5) dragged = true;
+    velocity = x - lastX; lastX = x;
+    target = startPos + dx;
+    clamp();
+  }
+  function up() {
+    if (!isDown) return;
+    isDown = false;
+    carousel.classList.remove('dragging');
+    target += velocity * 8;   // momentum
+    clamp();
+    updateDots(); updateBtns();
+  }
+
+  carousel.addEventListener('mousedown', e => { down(e.clientX); e.preventDefault(); });
+  window.addEventListener('mousemove', e => move(e.clientX));
+  window.addEventListener('mouseup', up);
+
+  carousel.addEventListener('touchstart', e => down(e.touches[0].clientX), { passive: true });
+  carousel.addEventListener('touchmove', e => move(e.touches[0].clientX), { passive: true });
+  carousel.addEventListener('touchend', up);
+
+  // Prevent link click after a drag
+  cards.forEach(card => {
+    card.addEventListener('click', e => { if (dragged) { e.preventDefault(); } });
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
-});
+
+  window.addEventListener('resize', measure);
+  animate();
+  // measure after layout/fonts settle
+  setTimeout(measure, 100);
+  window.addEventListener('load', measure);
+})();
 
 // MOBILE MENU
 (function() {
