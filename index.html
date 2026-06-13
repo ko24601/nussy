@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NUSSY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #22c55e;
+      --green-dim: #16a34a;
+      --green-glow: rgba(34,197,94,0.15);
+      --bg: #080c08;
+      --bg2: #0e140e;
+      --surface: #111811;
+      --border: rgba(34,197,94,0.12);
+      --white: #f0faf0;
+      --muted: #6b7f6b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(8,12,8,0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--green); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(34,197,94,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid var(--green-dim);
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    h1 {
+      font-size: clamp(4rem, 12vw, 9rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 0.95;
+      position: relative;
+    }
+
+    h1 span { color: var(--green); }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+    }
+
+    .btn {
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #080c08;
+    }
+
+    .btn-primary:hover {
+      background: #4ade80;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(34,197,94,0.3);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--white);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--green);
+      color: var(--green);
+      transform: translateY(-2px);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(var(--green), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 7rem 2rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 560px;
+    }
+
+    /* RAPIDLY */
+    #rapidly {
+      background: var(--bg2);
+    }
+
+    .rapidly-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--green-dim);
+      transform: translateY(-3px);
+    }
+
+    .stat-number {
+      font-size: 2.25rem;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* MOTORSPORT */
+    #motorsport {
+      background: var(--bg);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .card:hover {
+      border-color: var(--green-dim);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: var(--white);
+    }
+
+    .card-text {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* DEVELOPMENT */
+    #development {
+      background: var(--bg2);
+    }
+
+    .dev-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 2rem;
+    }
+
+    .pill {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+    }
+
+    .pill:hover {
+      border-color: var(--green-dim);
+      color: var(--green);
+    }
+
+    .code-block {
+      background: #0a120a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: #7fb87f;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-block::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--green-glow) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .code-dot { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .code-dot span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .code-dot span:first-child { background: #ff5f57; }
+    .code-dot span:nth-child(2) { background: #ffbd2e; }
+    .code-dot span:last-child { background: var(--green); }
+
+    .c-green { color: var(--green); }
+    .c-white { color: var(--white); }
+    .c-muted { color: var(--muted); }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 1.75rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      color: var(--green);
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--green); }
+
+    .footer-copy {
+      margin-top: 2.5rem;
+      font-size: 0.75rem;
+      color: #3a4a3a;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .rapidly-layout, .dev-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      section { padding: 5rem 1.5rem; }
+    }
+
+    /* FADE-IN ANIMATION */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">NUSSY</a>
+    <ul class="nav-links">
+      <li><a href="#rapidly">Rapidly</a></li>
+      <li><a href="#motorsport">Motorsport</a></li>
+      <li><a href="#development">Development</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-tag">Est. 2024 &nbsp;·&nbsp; Three Divisions</div>
+    <h1>NUS<span>SY</span></h1>
+    <p class="hero-sub">A collective built on speed, precision, and craft. Three divisions. One identity.</p>
+    <div class="hero-cta">
+      <a href="#rapidly" class="btn btn-primary">Explore</a>
+      <a href="#motorsport" class="btn btn-outline">Our Divisions</a>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- RAPIDLY -->
+  <section id="rapidly">
+    <div class="container">
+      <div class="rapidly-layout">
+        <div class="fade-in">
+          <p class="section-label">Division 01</p>
+          <h2 class="section-title">Rapidly</h2>
+          <p class="section-desc">
+            Speed is the standard. Rapidly is our operations and logistics arm — built to move fast, execute with precision, and deliver results without compromise. No delays. No excuses.
+          </p>
+          <div class="pill-list">
+            <span class="pill">Operations</span>
+            <span class="pill">Logistics</span>
+            <span class="pill">Strategy</span>
+            <span class="pill">Execution</span>
+          </div>
+        </div>
+        <div class="stat-grid fade-in">
+          <div class="stat-card">
+            <div class="stat-number">Fast</div>
+            <div class="stat-label">Turnaround</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Operations</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Commitment</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">Zero</div>
+            <div class="stat-label">Compromise</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MOTORSPORT -->
+  <section id="motorsport">
+    <div class="container">
+      <div class="fade-in">
+        <p class="section-label">Division 02</p>
+        <h2 class="section-title">Nussy Motorsport</h2>
+        <p class="section-desc">
+          Built for the track. Nussy Motorsport is where passion meets performance — pushing the limits of speed, engineering, and competition at every level.
+        </p>
+      </div>
+      <div class="cards-grid">
+        <div class="card fade-in">
+          <span class="card-icon">🏎️</span>
+          <div class="card-title">Racing</div>
+          <p class="card-text">Competing at the highest level with a relentless drive to win. Every race, every lap, every corner — executed to perfection.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="card-icon">⚙️</span>
+          <div class="card-title">Engineering</div>
+          <p class="card-text">Performance is built, not bought. Our technical team obsesses over every detail to extract every tenth of a second.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="card-icon">🏁</span>
+          <div class="card-title">Competition</div>
+          <p class="card-text">From sim racing to real-world events — Nussy Motorsport competes across multiple disciplines with one goal: the top step.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- DEVELOPMENT -->
+  <section id="development">
+    <div class="container">
+      <div class="dev-layout">
+        <div class="code-block fade-in">
+          <div class="code-dot"><span></span><span></span><span></span></div>
+          <div><span class="c-muted">// nussy.dev</span></div>
+          <div><span class="c-green">const</span> <span class="c-white">nussy</span> = {</div>
+          <div>&nbsp;&nbsp;<span class="c-green">mission</span>: <span style="color:#a3e8a3">"build without limits"</span>,</div>
+          <div>&nbsp;&nbsp;<span class="c-green">stack</span>: [<span style="color:#a3e8a3">"web"</span>, <span style="color:#a3e8a3">"tools"</span>, <span style="color:#a3e8a3">"apps"</span>],</div>
+          <div>&nbsp;&nbsp;<span class="c-green">quality</span>: <span style="color:#a3e8a3">"uncompromising"</span>,</div>
+          <div>}</div>
+          <br>
+          <div><span class="c-green">export default</span> <span class="c-white">nussy</span></div>
+        </div>
+        <div class="fade-in">
+          <p class="section-label">Division 03</p>
+          <h2 class="section-title">Nussy Development</h2>
+          <p class="section-desc">
+            Software built to last. Nussy Development creates tools, websites, and applications with a focus on clean code, sharp design, and real-world utility.
+          </p>
+          <div class="pill-list">
+            <span class="pill">Web Apps</span>
+            <span class="pill">Tools</span>
+            <span class="pill">UI/UX</span>
+            <span class="pill">Automation</span>
+            <span class="pill">APIs</span>
+            <span class="pill">Open Source</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">NUSSY</div>
+    <p class="footer-sub">Speed · Precision · Craft</p>
+    <ul class="footer-links">
+      <li><a href="#rapidly">Rapidly</a></li>
+      <li><a href="#motorsport">Motorsport</a></li>
+      <li><a href="#development">Development</a></li>
+    </ul>
+    <p class="footer-copy">© 2024 Nussy. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
