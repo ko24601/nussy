@@ -4,349 +4,1079 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nussy Co.</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 :root {
   --green: #22c55e;
-  --bg: #0a0a0a;
-  --text: #f5f5f5;
-  --muted: #525252;
-  --border: #1a1a1a;
+  --green-dark: #16a34a;
+  --green-light: #dcfce7;
+  --green-mid: #86efac;
+  --white: #ffffff;
+  --off: #f8fafc;
+  --text: #0a0a0a;
+  --muted: #64748b;
+  --border: #e2e8f0;
 }
 
 body {
-  background: var(--bg);
+  background: var(--white);
   color: var(--text);
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  line-height: 1.6;
   overflow-x: hidden;
 }
+
+::selection { background: var(--green); color: #fff; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--white); }
+::-webkit-scrollbar-thumb { background: var(--green); border-radius: 2px; }
 
 /* NAV */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 50;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 3rem;
-  background: rgba(10,10,10,0.85);
-  backdrop-filter: blur(8px);
+  padding: 1.25rem 3rem;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  transition: all 0.3s;
 }
 
 .logo {
   font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
 }
 
 .nav-links {
   display: flex;
   gap: 2rem;
   list-style: none;
+  align-items: center;
 }
 
 .nav-links a {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 500;
   color: var(--muted);
   text-decoration: none;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   transition: color 0.2s;
 }
 
 .nav-links a:hover { color: var(--text); }
 
-/* HERO */
-#hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 3rem 6rem;
-  border-bottom: 1px solid var(--border);
+.nav-cta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--text);
+  color: var(--white) !important;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  transition: background 0.2s !important;
 }
 
-.hero-label {
-  font-size: 0.75rem;
-  color: var(--muted);
-  letter-spacing: 0.1em;
+.nav-cta:hover { background: var(--green) !important; color: #fff !important; }
+
+/* HERO */
+#hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+#three-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  color: var(--green-dark);
+  background: var(--green-light);
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--green-mid);
+}
+
+.hero-badge span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  50% { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
 }
 
 h1 {
-  font-size: clamp(4rem, 14vw, 12rem);
-  font-weight: 300;
+  font-size: clamp(4.5rem, 14vw, 12rem);
+  font-weight: 900;
   letter-spacing: -0.04em;
-  line-height: 0.9;
+  line-height: 0.88;
   color: var(--text);
+  animation: heroReveal 1s cubic-bezier(0.16,1,0.3,1) both;
 }
 
 h1 em {
-  font-style: normal;
+  font-style: italic;
+  font-weight: 300;
   color: var(--green);
 }
 
+@keyframes heroReveal {
+  from { opacity: 0; transform: translateY(60px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .hero-sub {
-  margin-top: 2.5rem;
-  font-size: 1rem;
+  margin-top: 1.75rem;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
   color: var(--muted);
-  max-width: 400px;
+  max-width: 480px;
   line-height: 1.7;
+  font-weight: 400;
+  animation: heroReveal 1s cubic-bezier(0.16,1,0.3,1) 0.2s both;
 }
 
-/* SITES */
-#sites {
-  padding: 6rem 3rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.sites-header {
+.hero-cta {
+  margin-top: 2.5rem;
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 3rem;
+  gap: 0.75rem;
+  animation: heroReveal 1s cubic-bezier(0.16,1,0.3,1) 0.35s both;
 }
 
-.sites-title {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
+.btn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.85rem 1.75rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.25s;
+  letter-spacing: 0.02em;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.btn-dark {
+  background: var(--text);
+  color: var(--white);
+}
+
+.btn-dark:hover {
+  background: var(--green);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(34,197,94,0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+
+.btn-outline:hover {
+  border-color: var(--green);
+  color: var(--green);
+  transform: translateY(-2px);
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 2;
+  animation: heroReveal 1s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+
+.scroll-indicator span {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-.sites-count {
-  font-size: 0.75rem;
-  color: var(--muted);
+.scroll-line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(var(--green), transparent);
+  animation: scrollAnim 2s ease-in-out infinite;
 }
 
-.site-list {
-  display: flex;
-  flex-direction: column;
+@keyframes scrollAnim {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
-.site-item {
+/* STATS STRIP */
+#stats {
+  background: var(--text);
+  padding: 2rem 3rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1.75rem 0;
-  border-top: 1px solid var(--border);
+  justify-content: center;
+  gap: 5rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-n {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.stat-n span { color: var(--green); }
+
+.stat-l {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-top: 0.3rem;
+}
+
+/* SECTION COMMON */
+section { position: relative; }
+
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 7rem 3rem;
+}
+
+.section-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  margin-bottom: 1.25rem;
+}
+
+.section-chip::before {
+  content: '';
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--green);
+  border-radius: 1px;
+}
+
+.section-heading {
+  font-size: clamp(2.2rem, 5vw, 3.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 1.25rem;
+}
+
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 520px;
+}
+
+/* ABOUT SECTION */
+#about { background: var(--off); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.about-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.feature:hover {
+  border-color: var(--green);
+  transform: translateX(4px);
+  box-shadow: 0 4px 20px rgba(34,197,94,0.1);
+}
+
+.feature-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--green-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.feature-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.feature-text {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* 3D CARD SCENE */
+.about-3d {
+  perspective: 800px;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.card-3d {
+  width: 260px;
+  border-radius: 20px;
+  padding: 2rem;
+  transform-style: preserve-3d;
+  transition: transform 0.08s ease-out;
+  position: absolute;
+  cursor: pointer;
+}
+
+.card-3d-main {
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.12);
+  z-index: 3;
+}
+
+.card-3d-back1 {
+  background: var(--green-light);
+  border: 1px solid var(--green-mid);
+  transform: translate(-20px, 20px) rotateY(-8deg) rotateX(4deg);
+  z-index: 2;
+}
+
+.card-3d-back2 {
+  background: var(--green);
+  transform: translate(-40px, 40px) rotateY(-14deg) rotateX(8deg);
+  z-index: 1;
+}
+
+.card-3d-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  margin-bottom: 1rem;
+}
+
+.card-3d-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.card-3d-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.card-3d-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-top: 1.5rem;
+  box-shadow: 0 0 12px rgba(34,197,94,0.6);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* SITES SECTION */
+#sites { background: var(--white); }
+
+.sites-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 3.5rem;
+}
+
+.site-card {
+  position: relative;
+  background: var(--off);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
   text-decoration: none;
   color: inherit;
-  group: true;
-  transition: padding-left 0.3s ease;
+  overflow: hidden;
+  transition: all 0.3s;
+  transform-style: preserve-3d;
+  perspective: 600px;
+  display: block;
 }
 
-.site-item:last-child { border-bottom: 1px solid var(--border); }
-
-.site-item:hover { padding-left: 0.5rem; }
-
-.site-item:hover .site-name { color: var(--green); }
-
-.site-item:hover .site-arrow { opacity: 1; transform: translateX(0); }
-
-.site-left {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
+.site-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--green-light) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: 16px;
 }
 
-.site-num {
-  font-size: 0.7rem;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-  width: 1.5rem;
+.site-card:hover {
+  border-color: var(--green);
+  transform: translateY(-6px) rotateX(2deg);
+  box-shadow: 0 24px 60px rgba(34,197,94,0.15), 0 0 0 1px rgba(34,197,94,0.2);
 }
 
-.site-name {
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 300;
+.site-card:hover::before { opacity: 1; }
+
+.site-card-num {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.site-card-name {
+  font-size: 1.5rem;
+  font-weight: 800;
   letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
   transition: color 0.2s;
 }
 
-.site-tag {
-  font-size: 0.7rem;
+.site-card:hover .site-card-name { color: var(--green-dark); }
+
+.site-card-desc {
+  font-size: 0.85rem;
   color: var(--muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
-.site-right {
+.site-card-footer {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  justify-content: space-between;
 }
 
-.site-url {
-  font-size: 0.75rem;
+.site-card-url {
+  font-size: 0.72rem;
   color: var(--muted);
   letter-spacing: 0.05em;
 }
 
-.site-arrow {
-  font-size: 1rem;
-  color: var(--green);
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity 0.2s, transform 0.2s;
+.site-card-arrow {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.2s;
 }
 
-/* ABOUT */
-#about {
-  padding: 6rem 3rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: start;
-  border-bottom: 1px solid var(--border);
+.site-card:hover .site-card-arrow {
+  background: var(--green);
+  transform: rotate(45deg);
 }
 
-.about-label {
-  font-size: 0.75rem;
-  color: var(--muted);
+.site-card-tag {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding-top: 0.2rem;
+  color: var(--green-dark);
+  background: var(--green-light);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--green-mid);
 }
 
-.about-body p {
+/* IDENTITY SECTION */
+#identity { background: var(--text); overflow: hidden; }
+
+#identity .section-heading { color: var(--white); }
+#identity .section-chip { color: var(--green); }
+#identity .section-desc { color: #94a3b8; }
+
+.identity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.identity-visual {
+  position: relative;
+  height: 400px;
+  perspective: 1000px;
+}
+
+.floating-card {
+  position: absolute;
+  border-radius: 16px;
+  padding: 1.5rem;
+  animation-fill-mode: both;
+}
+
+.fc1 {
+  width: 220px;
+  background: var(--green);
+  color: var(--white);
+  top: 30px; left: 20px;
+  animation: float1 5s ease-in-out infinite;
+  box-shadow: 0 20px 60px rgba(34,197,94,0.4);
+}
+
+.fc2 {
+  width: 180px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  color: var(--white);
+  bottom: 40px; left: 60px;
+  animation: float2 6s ease-in-out infinite 1s;
+}
+
+.fc3 {
+  width: 160px;
+  background: #1a1a2e;
+  border: 1px solid rgba(34,197,94,0.3);
+  color: var(--white);
+  top: 100px; right: 10px;
+  animation: float3 7s ease-in-out infinite 0.5s;
+  box-shadow: 0 0 30px rgba(34,197,94,0.15);
+}
+
+@keyframes float1 {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-18px) rotate(-1deg); }
+}
+@keyframes float2 {
+  0%,100% { transform: translateY(0) rotate(4deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+@keyframes float3 {
+  0%,100% { transform: translateY(0) rotate(2deg); }
+  50% { transform: translateY(-22px) rotate(4deg); }
+}
+
+.fc-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.fc-value {
   font-size: 1.1rem;
-  color: var(--muted);
-  line-height: 1.8;
-  font-weight: 300;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
-.about-body p + p { margin-top: 1.2rem; }
+.identity-values {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.value-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.value-item:last-child { border-bottom: none; }
+
+.value-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.15rem;
+  flex-shrink: 0;
+  width: 2rem;
+}
+
+.value-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.25rem;
+}
+
+.value-text {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.6;
+}
 
 /* FOOTER */
 footer {
-  padding: 2.5rem 3rem;
+  background: var(--off);
+  border-top: 1px solid var(--border);
+  padding: 3rem;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.foot-name {
-  font-size: 0.8rem;
-  font-weight: 500;
+.foot-logo {
+  font-size: 1rem;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
+
+.foot-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.foot-links a {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.foot-links a:hover { color: var(--green); }
 
 .foot-copy {
   font-size: 0.75rem;
   color: var(--muted);
 }
 
+/* REVEAL ANIMATIONS */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
 /* RESPONSIVE */
-@media (max-width: 768px) {
-  nav { padding: 1.25rem 1.5rem; }
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
   .nav-links { display: none; }
-  #hero { padding: 0 1.5rem 4rem; }
-  #sites, #about { padding: 4rem 1.5rem; }
-  #about { grid-template-columns: 1fr; gap: 1.5rem; }
-  .site-url { display: none; }
+  .section-inner { padding: 5rem 1.5rem; }
+  .about-grid, .identity-grid, .sites-grid { grid-template-columns: 1fr; }
+  .about-3d, .identity-visual { height: 280px; }
+  #stats { gap: 2.5rem; padding: 2rem 1.5rem; }
   footer { padding: 2rem 1.5rem; }
+  .footer-inner { flex-direction: column; gap: 1.5rem; text-align: center; }
+  .foot-links { justify-content: center; }
 }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="logo">Nussy Co.</a>
+  <a href="#" class="logo"><span class="logo-dot"></span> Nussy Co.</a>
   <ul class="nav-links">
-    <li><a href="#sites">Sites</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#sites">Sites</a></li>
+    <li><a href="#identity">Identity</a></li>
+    <li><a href="#sites" class="nav-cta">Explore ↗</a></li>
   </ul>
 </nav>
 
+<!-- HERO -->
 <section id="hero">
-  <p class="hero-label">Nussy Co. — Est. 2024</p>
-  <h1>NUS<em>SY</em></h1>
-  <p class="hero-sub">We are Nussy Co. A collective built around motorsport, esports, and the culture around it.</p>
-</section>
-
-<section id="sites">
-  <div class="sites-header">
-    <span class="sites-title">Sites</span>
-    <span class="sites-count">04</span>
+  <canvas id="three-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge"><span></span> Nussy Co. — Est. 2024</div>
+    <h1>NUS<em>SY</em><br>CO.</h1>
+    <p class="hero-sub">We are Nussy Co. A collective built around motorsport, esports, and the culture around it. Four projects. One identity.</p>
+    <div class="hero-cta">
+      <a href="#sites" class="btn btn-dark">Our Sites</a>
+      <a href="#about" class="btn btn-outline">Who We Are</a>
+    </div>
   </div>
-  <div class="site-list">
-
-    <a class="site-item" href="https://ko24601.github.io/rapidly-rl/" target="_blank" rel="noopener">
-      <div class="site-left">
-        <span class="site-num">01</span>
-        <span class="site-name">Rapidly</span>
-        <span class="site-tag">Operations</span>
-      </div>
-      <div class="site-right">
-        <span class="site-url">rapidly-rl</span>
-        <span class="site-arrow">↗</span>
-      </div>
-    </a>
-
-    <a class="site-item" href="https://www.nussymotorsport.de/" target="_blank" rel="noopener">
-      <div class="site-left">
-        <span class="site-num">02</span>
-        <span class="site-name">Nussy Motorsport</span>
-        <span class="site-tag">Racing</span>
-      </div>
-      <div class="site-right">
-        <span class="site-url">nussymotorsport.de</span>
-        <span class="site-arrow">↗</span>
-      </div>
-    </a>
-
-    <a class="site-item" href="https://nussymotorsport.store/" target="_blank" rel="noopener">
-      <div class="site-left">
-        <span class="site-num">03</span>
-        <span class="site-name">Nussy Store</span>
-        <span class="site-tag">Merch</span>
-      </div>
-      <div class="site-right">
-        <span class="site-url">nussymotorsport.store</span>
-        <span class="site-arrow">↗</span>
-      </div>
-    </a>
-
-    <a class="site-item" href="https://prlesports.com/" target="_blank" rel="noopener">
-      <div class="site-left">
-        <span class="site-num">04</span>
-        <span class="site-name">PRL Esports</span>
-        <span class="site-tag">Esports</span>
-      </div>
-      <div class="site-right">
-        <span class="site-url">prlesports.com</span>
-        <span class="site-arrow">↗</span>
-      </div>
-    </a>
-
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
   </div>
 </section>
 
+<!-- STATS -->
+<div id="stats">
+  <div class="stat"><div class="stat-n">4<span>+</span></div><div class="stat-l">Active Sites</div></div>
+  <div class="stat"><div class="stat-n">1<span>K+</span></div><div class="stat-l">Community</div></div>
+  <div class="stat"><div class="stat-n">24<span>/7</span></div><div class="stat-l">Operations</div></div>
+  <div class="stat"><div class="stat-n">1<span>✦</span></div><div class="stat-l">Identity</div></div>
+</div>
+
+<!-- ABOUT -->
 <section id="about">
-  <span class="about-label">About</span>
-  <div class="about-body">
-    <p>Nussy Co. is a collective built around motorsport, esports, and the people who live for it. We race, we compete, we build — and we do it under one name.</p>
-    <p>Everything we put out carries the same standard. Four projects. One identity.</p>
+  <div class="section-inner">
+    <div class="about-grid">
+      <div>
+        <p class="section-chip reveal">About Nussy Co.</p>
+        <h2 class="section-heading reveal reveal-delay-1">Built around<br>one name.</h2>
+        <p class="section-desc reveal reveal-delay-2">Nussy Co. is a collective built around motorsport, esports, and the people who live for it. We race, we compete, we build — and we do it under one name.</p>
+        <div class="about-features">
+          <div class="feature reveal reveal-delay-2">
+            <div class="feature-icon">🏎️</div>
+            <div><div class="feature-title">Motorsport</div><div class="feature-text">Racing at every level — sim to asphalt.</div></div>
+          </div>
+          <div class="feature reveal reveal-delay-3">
+            <div class="feature-icon">🎮</div>
+            <div><div class="feature-title">Esports</div><div class="feature-text">Competing where it counts, every season.</div></div>
+          </div>
+          <div class="feature reveal reveal-delay-4">
+            <div class="feature-icon">⚡</div>
+            <div><div class="feature-title">Operations</div><div class="feature-text">Fast, precise, no compromise.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="about-3d reveal reveal-delay-2" id="tilt-scene">
+        <div class="card-3d card-3d-back2"></div>
+        <div class="card-3d card-3d-back1"></div>
+        <div class="card-3d card-3d-main" id="tilt-card">
+          <div class="card-3d-label">Nussy Co.</div>
+          <div class="card-3d-title">One Identity.<br>Every Project.</div>
+          <div class="card-3d-sub">Est. 2024</div>
+          <div class="card-3d-dot"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
+<!-- SITES -->
+<section id="sites">
+  <div class="section-inner">
+    <p class="section-chip reveal">Our Sites</p>
+    <h2 class="section-heading reveal reveal-delay-1">Everything<br>we've built.</h2>
+    <div class="sites-grid">
+
+      <a class="site-card reveal reveal-delay-1" href="https://ko24601.github.io/rapidly-rl/" target="_blank" rel="noopener">
+        <div class="site-card-tag">Operations</div>
+        <div class="site-card-num">01 — rapidly-rl</div>
+        <div class="site-card-name">Rapidly</div>
+        <div class="site-card-desc">Speed is the standard. Fast, precise, no compromise.</div>
+        <div class="site-card-footer">
+          <span class="site-card-url">rapidly-rl.github.io</span>
+          <div class="site-card-arrow">↗</div>
+        </div>
+      </a>
+
+      <a class="site-card reveal reveal-delay-2" href="https://www.nussymotorsport.de/" target="_blank" rel="noopener">
+        <div class="site-card-tag">Racing</div>
+        <div class="site-card-num">02 — nussy-motorsport</div>
+        <div class="site-card-name">Nussy Motorsport</div>
+        <div class="site-card-desc">Built for the track. Pushing the limits of speed and competition.</div>
+        <div class="site-card-footer">
+          <span class="site-card-url">nussymotorsport.de</span>
+          <div class="site-card-arrow">↗</div>
+        </div>
+      </a>
+
+      <a class="site-card reveal reveal-delay-3" href="https://nussymotorsport.store/" target="_blank" rel="noopener">
+        <div class="site-card-tag">Merch</div>
+        <div class="site-card-num">03 — nussy-store</div>
+        <div class="site-card-name">Nussy Store</div>
+        <div class="site-card-desc">Official team gear and merchandise. Wear the colors.</div>
+        <div class="site-card-footer">
+          <span class="site-card-url">nussymotorsport.store</span>
+          <div class="site-card-arrow">↗</div>
+        </div>
+      </a>
+
+      <a class="site-card reveal reveal-delay-4" href="https://prlesports.com/" target="_blank" rel="noopener">
+        <div class="site-card-tag">Esports</div>
+        <div class="site-card-num">04 — prl-esports</div>
+        <div class="site-card-name">PRL Esports</div>
+        <div class="site-card-desc">Competitive esports at the highest level. Racing, strategy, skill.</div>
+        <div class="site-card-footer">
+          <span class="site-card-url">prlesports.com</span>
+          <div class="site-card-arrow">↗</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- IDENTITY -->
+<section id="identity">
+  <div class="section-inner">
+    <div class="identity-grid">
+      <div>
+        <p class="section-chip reveal">Our Identity</p>
+        <h2 class="section-heading reveal reveal-delay-1">What Nussy<br>stands for.</h2>
+        <p class="section-desc reveal reveal-delay-2">Everything we build and compete in carries the same DNA — relentless, precise, and built to last.</p>
+        <div class="identity-values">
+          <div class="value-item reveal reveal-delay-2">
+            <span class="value-num">01</span>
+            <div><div class="value-title">Speed</div><div class="value-text">On the track, in operations, in everything we ship. Fast is the default.</div></div>
+          </div>
+          <div class="value-item reveal reveal-delay-3">
+            <span class="value-num">02</span>
+            <div><div class="value-title">Precision</div><div class="value-text">Every corner, every line of code, every decision — executed correctly.</div></div>
+          </div>
+          <div class="value-item reveal reveal-delay-4">
+            <span class="value-num">03</span>
+            <div><div class="value-title">Craft</div><div class="value-text">We care about what we make. Quality is never optional.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="identity-visual reveal reveal-delay-2">
+        <div class="floating-card fc1">
+          <div class="fc-label">Status</div>
+          <div class="fc-value">Active 2024</div>
+        </div>
+        <div class="floating-card fc2">
+          <div class="fc-label">Projects</div>
+          <div class="fc-value">4 Live Sites</div>
+        </div>
+        <div class="floating-card fc3">
+          <div class="fc-label">Identity</div>
+          <div class="fc-value" style="color:var(--green)">Nussy Co.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <span class="foot-name">Nussy Co.</span>
-  <span class="foot-copy">© 2024 Nussy Co. All rights reserved.</span>
+  <div class="footer-inner">
+    <div class="foot-logo"><span class="logo-dot"></span> Nussy Co.</div>
+    <ul class="foot-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#sites">Sites</a></li>
+      <li><a href="#identity">Identity</a></li>
+    </ul>
+    <span class="foot-copy">© 2024 Nussy Co. All rights reserved.</span>
+  </div>
 </footer>
 
+<script>
+// THREE.JS HERO BACKGROUND
+(function() {
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0xffffff, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.z = 8;
+
+  function resize() {
+    const w = window.innerWidth, h = window.innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Floating geometric shapes
+  const shapes = [];
+  const greenColor = new THREE.Color(0x22c55e);
+  const greenLight = new THREE.Color(0x86efac);
+  const borderColor = new THREE.Color(0xe2e8f0);
+
+  const geometries = [
+    new THREE.IcosahedronGeometry(0.5, 0),
+    new THREE.OctahedronGeometry(0.45, 0),
+    new THREE.TetrahedronGeometry(0.5, 0),
+    new THREE.BoxGeometry(0.6, 0.6, 0.6),
+    new THREE.IcosahedronGeometry(0.35, 0),
+    new THREE.OctahedronGeometry(0.3, 0),
+    new THREE.TetrahedronGeometry(0.4, 0),
+    new THREE.BoxGeometry(0.5, 0.5, 0.5),
+    new THREE.IcosahedronGeometry(0.25, 0),
+  ];
+
+  geometries.forEach((geo, i) => {
+    // Wireframe
+    const mat = new THREE.MeshBasicMaterial({
+      color: i % 3 === 0 ? greenColor : i % 3 === 1 ? greenLight : borderColor,
+      wireframe: true,
+      transparent: true,
+      opacity: i % 3 === 0 ? 0.25 : 0.15,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 18,
+      (Math.random() - 0.5) * 10,
+      (Math.random() - 0.5) * 4
+    );
+    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+    const speed = { rx: (Math.random() - 0.5) * 0.008, ry: (Math.random() - 0.5) * 0.012, rz: (Math.random() - 0.5) * 0.006 };
+    const float = { speed: 0.3 + Math.random() * 0.5, amplitude: 0.2 + Math.random() * 0.4, offset: Math.random() * Math.PI * 2, baseY: mesh.position.y };
+    scene.add(mesh);
+    shapes.push({ mesh, speed, float });
+  });
+
+  // Mouse parallax
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.016;
+    shapes.forEach(({ mesh, speed, float }) => {
+      mesh.rotation.x += speed.rx;
+      mesh.rotation.y += speed.ry;
+      mesh.rotation.z += speed.rz;
+      mesh.position.y = float.baseY + Math.sin(t * float.speed + float.offset) * float.amplitude;
+    });
+    camera.position.x += (mouseX * 1.2 - camera.position.x) * 0.04;
+    camera.position.y += (-mouseY * 0.8 - camera.position.y) * 0.04;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// 3D CARD TILT
+(function() {
+  const card = document.getElementById('tilt-card');
+  const scene = document.getElementById('tilt-scene');
+  if (!card || !scene) return;
+  scene.addEventListener('mousemove', e => {
+    const rect = scene.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `rotateY(${x * 22}deg) rotateX(${-y * 16}deg) translateZ(20px)`;
+  });
+  scene.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+})();
+
+// SITE CARD 3D TILT
+document.querySelectorAll('.site-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `translateY(-6px) rotateX(${-y * 8}deg) rotateY(${x * 10}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
