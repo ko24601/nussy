@@ -550,77 +550,55 @@ section { position: relative; }
 /* SITES SECTION */
 #sites { background: var(--white); padding-bottom: 4rem; }
 
-.sites-head {
+.deck-hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 1rem;
+  letter-spacing: 0.02em;
+}
+
+/* FANNED CARD DECK */
+.deck {
+  position: relative;
+  height: 460px;
+  margin-top: 2.5rem;
   display: flex;
+  justify-content: center;
   align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
+  perspective: 1600px;
 }
 
-.carousel-nav {
-  display: flex;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.carousel-btn {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border);
-  background: var(--white);
-  color: var(--text);
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center;
-}
-
-.carousel-btn:hover {
-  border-color: var(--green);
-  background: var(--green);
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-.carousel-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  transform: none;
-  background: var(--white);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-/* SCROLL-SNAP DRAG CAROUSEL */
-.carousel {
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  cursor: grab;
-  padding: 0.5rem 3rem 1.5rem;
-  margin-top: 3rem;
-  scrollbar-width: none;          /* Firefox */
-  -ms-overflow-style: none;       /* IE/Edge */
-}
-
-.carousel::-webkit-scrollbar { display: none; }  /* Chrome/Safari */
-
-.carousel.active {
-  cursor: grabbing;
-  scroll-snap-type: none;
-  scroll-behavior: auto;
-}
-
-.carousel .site-card {
-  flex: 0 0 360px;
-  width: 360px;
-  scroll-snap-align: center;
+.deck .site-card {
+  position: absolute;
+  bottom: 30px;
+  width: 300px;
+  height: 340px;
   margin-top: 0;
+  transform-origin: bottom center;
+  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s, border-color 0.35s, opacity 0.35s;
+  will-change: transform;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  backface-visibility: hidden;
 }
 
-.carousel.active .site-card { pointer-events: none; }
+.deck .site-card .site-card-desc { flex: 1; }
+
+/* the card brought to the front */
+.deck .site-card.front {
+  z-index: 50 !important;
+  border-color: var(--green);
+  box-shadow: 0 40px 90px rgba(34,197,94,0.25), 0 0 0 1px rgba(34,197,94,0.3);
+}
+
+.deck .site-card.front::before { opacity: 1; }
+
+.deck .site-card.front .site-card-name { color: var(--green-dark); }
+.deck .site-card.front .site-card-arrow { background: var(--green); transform: rotate(45deg); }
+
+/* dim the others when one is focused */
+.deck.has-front .site-card:not(.front) { opacity: 0.55; }
 
 .site-card {
   position: relative;
@@ -915,9 +893,8 @@ footer {
   .nav-toggle { display: flex; }
   .section-inner { padding: 5rem 1.5rem; }
   .about-grid, .identity-grid, .sites-grid { grid-template-columns: 1fr; }
-  .sites-head { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .carousel { padding: 0.5rem 1.5rem 1.5rem; }
-  .carousel .site-card { flex-basis: 80vw; width: 80vw; }
+  .deck { height: 420px; }
+  .deck .site-card { width: 260px; height: 320px; }
   .about-3d, .identity-visual { height: 280px; }
   #stats { gap: 2.5rem; padding: 2rem 1.5rem; }
   footer { padding: 2rem 1.5rem; }
@@ -1015,19 +992,12 @@ footer {
 <!-- SITES -->
 <section id="sites">
   <div class="section-inner">
-    <div class="sites-head">
-      <div>
-        <p class="section-chip reveal">Our Sites</p>
-        <h2 class="section-heading reveal reveal-delay-1">Everything<br>we've built.</h2>
-      </div>
-      <div class="carousel-nav reveal reveal-delay-2">
-        <button class="carousel-btn" id="carPrev" aria-label="Previous">←</button>
-        <button class="carousel-btn" id="carNext" aria-label="Next">→</button>
-      </div>
-    </div>
+    <p class="section-chip reveal">Our Sites</p>
+    <h2 class="section-heading reveal reveal-delay-1">Everything<br>we've built.</h2>
+    <p class="deck-hint reveal reveal-delay-2">Hover or tap a card to bring it to the front.</p>
   </div>
 
-  <div class="carousel reveal reveal-delay-2" id="carousel">
+  <div class="deck reveal reveal-delay-2" id="deck">
 
     <div class="site-card" style="opacity:0.4;">
       <div class="site-card-tag">Coming Soon</div>
@@ -1226,63 +1196,63 @@ footer {
   });
 })();
 
-// SCROLL-SNAP DRAG CAROUSEL
+// FANNED CARD DECK
 (function() {
-  const slider = document.getElementById('carousel');
-  const prev = document.getElementById('carPrev');
-  const next = document.getElementById('carNext');
-  if (!slider) return;
+  const deck = document.getElementById('deck');
+  if (!deck) return;
+  const cards = Array.from(deck.querySelectorAll('.site-card'));
+  const n = cards.length;
+  const mid = (n - 1) / 2;
 
-  let isDown = false, startX, scrollLeft, moved = false;
+  const SPREAD = 13;   // degrees between cards
+  const SHIFT  = 78;   // px horizontal offset between cards
+  const ARC    = 14;   // px vertical drop toward the edges
 
-  // ── Drag (mouse) ──
-  slider.addEventListener('mousedown', e => {
-    isDown = true; moved = false;
-    slider.classList.add('active');
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
-  });
-  slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
-  slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
-  slider.addEventListener('mousemove', e => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 1.6;
-    if (Math.abs(x - startX) > 4) moved = true;
-    slider.scrollLeft = scrollLeft - walk;
-  });
-
-  // ── Touch ──
-  let touchStartX, touchScrollLeft;
-  slider.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].pageX - slider.offsetLeft;
-    touchScrollLeft = slider.scrollLeft;
-  }, { passive: true });
-  slider.addEventListener('touchmove', e => {
-    const x = e.touches[0].pageX - slider.offsetLeft;
-    slider.scrollLeft = touchScrollLeft - (x - touchStartX) * 1.4;
-  }, { passive: true });
-
-  // ── Prevent click after drag ──
-  slider.querySelectorAll('.site-card').forEach(card => {
-    card.addEventListener('click', e => { if (moved) e.preventDefault(); });
-  });
-
-  // ── Arrows ──
-  function cardStep() {
-    const card = slider.querySelector('.site-card');
-    return card ? card.offsetWidth + 20 : 380;
+  function base(i) {
+    const offset = i - mid;
+    const rot = offset * SPREAD;
+    const x = offset * SHIFT;
+    const y = Math.abs(offset) * ARC;       // edges dip down → arc
+    return `translateX(${x}px) translateY(${y}px) rotate(${rot}deg)`;
   }
-  function updateBtns() {
-    prev.disabled = slider.scrollLeft <= 2;
-    next.disabled = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 2;
+
+  function layout() {
+    cards.forEach((card, i) => {
+      if (!card.classList.contains('front')) {
+        card.style.transform = base(i);
+        card.style.zIndex = (n - Math.abs(i - mid)).toString();
+      }
+    });
   }
-  prev.addEventListener('click', () => { slider.scrollBy({ left: -cardStep(), behavior: 'smooth' }); });
-  next.addEventListener('click', () => { slider.scrollBy({ left: cardStep(), behavior: 'smooth' }); });
-  slider.addEventListener('scroll', updateBtns, { passive: true });
-  window.addEventListener('resize', updateBtns);
-  updateBtns();
+
+  function bringFront(card) {
+    deck.classList.add('has-front');
+    cards.forEach(c => c.classList.remove('front'));
+    card.classList.add('front');
+    card.style.transform = 'translateX(0) translateY(-55px) rotate(0deg) scale(1.08)';
+  }
+
+  function reset() {
+    deck.classList.remove('has-front');
+    cards.forEach(c => c.classList.remove('front'));
+    layout();
+  }
+
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => bringFront(card));
+    // tap-to-front on touch; second tap follows the link
+    card.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches && !card.classList.contains('front')) {
+        e.preventDefault();
+        bringFront(card);
+      }
+    });
+  });
+
+  deck.addEventListener('mouseleave', reset);
+
+  layout();
+  window.addEventListener('resize', () => { if (!deck.classList.contains('has-front')) layout(); });
 })();
 
 // MOBILE MENU
