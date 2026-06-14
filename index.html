@@ -1228,8 +1228,10 @@ footer {
   function bringFront(card) {
     deck.classList.add('has-front');
     cards.forEach(c => c.classList.remove('front'));
+    layout();   // reset every card back to its fanned position first
     card.classList.add('front');
     card.style.transform = 'translateX(0) translateY(-55px) rotate(0deg) scale(1.08)';
+    card.style.zIndex = '100';
   }
 
   function reset() {
