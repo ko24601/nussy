@@ -601,7 +601,7 @@ section { position: relative; }
 .deck.has-front .site-card:not(.front) { opacity: 0.25; }
 
 /* coming soon cards — muted but fully opaque so nothing bleeds through */
-.site-card--soon { filter: grayscale(0.4); pointer-events: none; }
+.site-card--soon { filter: grayscale(0.4); cursor: default; }
 .site-card--soon .site-card-name, .site-card--soon .site-card-desc { opacity: 0.5; }
 
 /* prevent CSS hover transform from conflicting with JS fan logic */
@@ -1255,7 +1255,7 @@ footer {
   cards.forEach(card => {
     card.addEventListener('mouseenter', () => {
       clearTimeout(hoverTimer);
-      hoverTimer = setTimeout(() => bringFront(card), 80);
+      hoverTimer = setTimeout(() => bringFront(card), 200);
     });
     card.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
     // tap-to-front on touch; second tap follows the link
