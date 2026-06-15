@@ -598,7 +598,14 @@ section { position: relative; }
 .deck .site-card.front .site-card-arrow { background: var(--green); transform: rotate(45deg); }
 
 /* dim the others when one is focused */
-.deck.has-front .site-card:not(.front) { opacity: 0.55; }
+.deck.has-front .site-card:not(.front) { opacity: 0.25; }
+
+/* coming soon cards — muted but fully opaque so nothing bleeds through */
+.site-card--soon { filter: grayscale(0.4); pointer-events: none; }
+.site-card--soon .site-card-name, .site-card--soon .site-card-desc { opacity: 0.5; }
+
+/* prevent CSS hover transform from conflicting with JS fan logic */
+.deck .site-card:hover { transform: none; box-shadow: none; border-color: var(--border); }
 
 .site-card {
   position: relative;
@@ -999,7 +1006,7 @@ footer {
 
   <div class="deck reveal reveal-delay-2" id="deck">
 
-    <div class="site-card" style="opacity:0.4;">
+    <div class="site-card site-card--soon">
       <div class="site-card-tag">Coming Soon</div>
       <div class="site-card-num">01 — rapidly-rl</div>
       <div class="site-card-name">Rapidly</div>
@@ -1031,7 +1038,7 @@ footer {
       <div class="site-card-footer"><span class="site-card-url">prlesports.com</span><div class="site-card-arrow">↗</div></div>
     </a>
 
-    <div class="site-card" style="opacity:0.4;">
+    <div class="site-card site-card--soon">
       <div class="site-card-tag">Coming Soon</div>
       <div class="site-card-num">05 — nussy-dev</div>
       <div class="site-card-name">Nussy Dev</div>
