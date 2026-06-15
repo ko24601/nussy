@@ -1227,8 +1227,11 @@ footer {
 
   function bringFront(card) {
     deck.classList.add('has-front');
+    // keep outgoing front card at elevated z-index during its return animation
+    const prev = cards.find(c => c.classList.contains('front'));
+    if (prev && prev !== card) prev.style.zIndex = '50';
     cards.forEach(c => c.classList.remove('front'));
-    layout();   // reset every card back to its fanned position first
+    layout();
     card.classList.add('front');
     card.style.transform = 'translateX(0) translateY(-55px) rotate(0deg) scale(1.08)';
     card.style.zIndex = '100';
