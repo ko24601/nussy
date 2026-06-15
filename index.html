@@ -1269,6 +1269,11 @@ footer {
 
   deck.addEventListener('mouseleave', () => { clearTimeout(hoverTimer); reset(); });
 
+  // tap outside deck on mobile resets the fan
+  document.addEventListener('click', e => {
+    if (window.matchMedia('(hover: none)').matches && !deck.contains(e.target)) reset();
+  });
+
   layout();
   window.addEventListener('resize', () => { if (!deck.classList.contains('has-front')) layout(); });
 })();
