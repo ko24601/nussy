@@ -1243,8 +1243,14 @@ footer {
     layout();
   }
 
+  let hoverTimer = null;
+
   cards.forEach(card => {
-    card.addEventListener('mouseenter', () => bringFront(card));
+    card.addEventListener('mouseenter', () => {
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(() => bringFront(card), 80);
+    });
+    card.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
     // tap-to-front on touch; second tap follows the link
     card.addEventListener('click', e => {
       if (window.matchMedia('(hover: none)').matches && !card.classList.contains('front')) {
@@ -1254,7 +1260,7 @@ footer {
     });
   });
 
-  deck.addEventListener('mouseleave', reset);
+  deck.addEventListener('mouseleave', () => { clearTimeout(hoverTimer); reset(); });
 
   layout();
   window.addEventListener('resize', () => { if (!deck.classList.contains('has-front')) layout(); });
